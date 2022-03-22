@@ -1,0 +1,23 @@
+.card {
+  text-align: center;
+  width: 390px;
+}
+.card-img-top {
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+}
+.avtar {
+ 
+  border-radius: 50%;
+}
+.profilePic {
+  border-radius: 50%;
+  border: 4px solid var(--bg-accent);
+}
+.card-body {
+  margin: -40px auto 5px;
+}
+.card-text {
+  
+  color: var(--bg-accent);
+}

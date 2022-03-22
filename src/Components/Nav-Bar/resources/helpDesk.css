@@ -1,0 +1,37 @@
+
+.helpDesk-hero {
+    background: linear-gradient(
+        217deg,
+        rgba(255, 0, 0, 0.8),
+        rgba(255, 0, 0, 0) 70.71%
+      ),
+      linear-gradient(
+        127deg,
+        rgba(0, 255, 0, 0.8),
+        rgba(0, 255, 0, 0) 70.71%
+      ),
+      linear-gradient(
+        336deg,
+        rgba(0, 0, 255, 0.8),
+        rgba(0, 0, 255, 0) 70.71%
+      ),
+      url("./pexels-rodnae-productions-8369590.jpg");
+    background-position: center;
+    background-size: cover;
+  }
+
+  .card:hover p {
+    filter: brightness(10%);
+  }
+
+  .card:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 10px 4px rgba(91, 91, 94, 0.2);
+  }
+  .title-inner {
+    font-size: 20px;
+    font-weight: 400;
+  }
+  .title-inner:hover {
+    font-weight: 500;
+  }

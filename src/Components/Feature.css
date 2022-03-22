@@ -1,0 +1,22 @@
+/* features */
+/* 
+* dark mode 
+  --bg-dark: #202225;
+  --bg-accent-dark: #303339;
+  --text-color-dark: #e5e8eb;
+
+* light mode 
+  --bg-light: #ffffff;
+  --bg-accent-light: #353840;
+  --text-color-light: #04111d;
+  
+  --border: 1px solid #474a4d;
+    --nav-size: 100px;
+    --border-radius: 10px;
+    --speed: 500ms;
+*/
+
+.feature-card {
+  border: 0;
+  margin-top: 1rem;
+}
