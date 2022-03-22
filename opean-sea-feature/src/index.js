@@ -1,15 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import TApp from './TApp'
+import App from './App'
 import { BrowserRouter } from 'react-router-dom'
-
 
 ReactDOM.render(
   <BrowserRouter>
-   
-    <TApp />
+    <App />
   </BrowserRouter>,
   document.getElementById('root')
 )
-

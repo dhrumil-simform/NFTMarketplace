@@ -10,6 +10,9 @@ import { Explore } from './explore/Explore'
 import { MyCollection } from './profile/MyCollection'
 import { CreateNewItems } from '../CreateNewItems'
 import { CreateCollection } from './profile/CreateCollection'
+import { Wallet } from '../Wallet'
+import { MetamaskLanding } from '../MetamaskLanding'
+
 export default function Navbar() {
   const [click, setClick] = useState(false)
   // console.log(props)
@@ -57,6 +60,7 @@ export default function Navbar() {
             ))}
           </ul>
         </div>
+
         {/* </div> */}
       </nav>
 
@@ -78,6 +82,13 @@ export default function Navbar() {
 
         <Route path='/my collections/create' exact>
           <CreateCollection />
+        </Route>
+
+        <Route path='/Wallet'>
+          <Wallet />
+        </Route>
+        <Route path='/metamasklanding'>
+          <MetamaskLanding />
         </Route>
       </Switch>
     </>
