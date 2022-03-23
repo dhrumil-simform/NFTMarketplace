@@ -130,4 +130,11 @@ contract CoreCollection is ICoreCollection, ERC721URIStorage {
             .push(_itemId);
         emit NFTCreated(_itemId, _NFTName);
     }
+
+    function getCollectionIds(address _address) external view returns(uint256[] memory){
+        return userToCollectionIds[_address];
+    }
+    function test() external pure returns(uint256) {
+        return 2;
+    }
 }

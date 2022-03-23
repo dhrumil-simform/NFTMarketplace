@@ -290,4 +290,12 @@ describe("CoreCollection & Market", async () => {
 
     expect(await market.idToPrice(1)).to.equal(ethers.utils.parseEther("0.5"));
   });
+
+  it("test", async () => {
+    await nft.createCollection("sd");
+    await nft.createCollection("sds");
+    await nft.createCollection("sdss");
+    const x = await nft.getCollectionIds(addr1.address)
+    console.log(x);
+  })
 });

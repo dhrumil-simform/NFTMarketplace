@@ -1,42 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { IoWalletSharp, IoImages } from "react-icons/io5";
-import { ethers } from "ethers";
+import "./Feature.css"
+
 
 export default function Feature(props) {
-  const Icon = () => {
-    return <IoImages />;
-  };
-
-  const connectWallet = async () => {
-    const [account] = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    console.log(account);
-  };
-
-  const handleClick = () => {
-    if (props.id === 1) {
-      connectWallet();
-    }
-  };
 
   return (
     <div className="feature-card">
       <span className={`feature-icon fa-3x`}>
-        <IoWalletSharp />
+        <i className={props.icon}></i>
+        
       </span>
 
-      <h5 className="feature-title">{props.title}</h5>
+      <h2 className="feature-title">{props.title}</h2>
 
-      <p className="feature-text">{props.content}</p>
+      <h5 className="feature-text">{props.content}</h5>
 
-      <button
-        onClick={handleClick}
-        className="btn btn-lg btn-outline-primary m-2"
-      >
-        {props.title}
-      </button>
+      
     </div>
   );
 }

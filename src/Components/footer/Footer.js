@@ -37,22 +37,22 @@ export default function Footer() {
           </div>
           <div className='col-lg-6 col-md-12 community'>
             <h3 className='title m-4'>Join the community</h3>
-            <i className='feature-icon cursor-pointer'>
+            <i className='feature-icon cursor-pointer text-white'>
               <FaTwitter />
             </i>
-            <i className='feature-icon cursor-pointer'>
+            <i className='feature-icon cursor-pointer text-white'>
               <FaInstagram />
             </i>
-            <i className='feature-icon cursor-pointer'>
+            <i className='feature-icon cursor-pointer text-white'>
               <FaDiscord />
             </i>
-            <i className='feature-icon cursor-pointer'>
+            <i className='feature-icon cursor-pointer text-white'>
               <FaRedditAlien />
             </i>
-            <i className='feature-icon cursor-pointer'>
+            <i className='feature-icon cursor-pointer text-white'>
               <FaYoutube />
             </i>
-            <i className='feature-icon cursor-pointer'>
+            <i className='feature-icon cursor-pointer text-white'>
               <FaEnvelope />
             </i>
           </div>
