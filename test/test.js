@@ -18,9 +18,11 @@ describe("CoreCollection & Market", async () => {
 
     [addr1, addr2, addr3] = await ethers.getSigners();
   });
+
   it("should deploy contract successfully", async () => {
     await nft.deployed();
   });
+
   it("should create collection successfully", async () => {
     const name = "collection_1";
     const tx = await nft.createCollection(name);
@@ -44,9 +46,11 @@ describe("CoreCollection & Market", async () => {
     );
     const reciept = await tx.wait();
     const events = reciept.events.find((event) => event.event === "NFTCreated");
-    const [_itemId, _NFTName] = events.args;
+    const [_itemId, _NFTName, _collection] = events.args;
+    console.log(await nft.collections(1))
     expect(_itemId).to.equal(1);
     expect(_NFTName).to.equal("My NFT");
+    console.log(await nft.getItems(1))
   });
 
   it("should update the owner of the token after sending", async () => {
@@ -150,6 +154,7 @@ describe("CoreCollection & Market", async () => {
 
     expect(_buyer).to.equal(await nft.ownerOf(1));
   });
+
   it("creates offer for NFT", async () => {
     const collectionName = "collection_1";
     await nft.createCollection(collectionName);
@@ -291,11 +296,11 @@ describe("CoreCollection & Market", async () => {
     expect(await market.idToPrice(1)).to.equal(ethers.utils.parseEther("0.5"));
   });
 
-  it("test", async () => {
-    await nft.createCollection("sd");
-    await nft.createCollection("sds");
-    await nft.createCollection("sdss");
-    const x = await nft.getCollectionIds(addr1.address)
-    console.log(x);
-  })
+  // it("test", async () => {
+  //   await nft.createCollection("sd");
+  //   await nft.createCollection("sds");
+  //   await nft.createCollection("sdss");
+  //   const x = await nft.getCollectionIds(addr1.address)
+  //   console.log(x);
+  // })
 });

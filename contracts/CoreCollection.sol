@@ -64,7 +64,7 @@ contract CoreCollection is ICoreCollection, ERC721URIStorage {
     /**
      * @dev Emitted when NFT with '_NFTName' and '_itemId' is created successfully
      */
-    event NFTCreated(uint256 _itemId, string _NFTName);
+    event NFTCreated(uint256 _itemId, string _NFTName, Collection _collection);
 
     /**
      * @dev function to mint NFT Token
@@ -128,13 +128,14 @@ contract CoreCollection is ICoreCollection, ERC721URIStorage {
         collections[userToCollectionIds[msg.sender][_collectionId]]
             .itemIds
             .push(_itemId);
-        emit NFTCreated(_itemId, _NFTName);
+        // console.log(collections[1]);
+        emit NFTCreated(_itemId, _NFTName, collections[userToCollectionIds[msg.sender][_collectionId]]);
     }
 
     function getCollectionIds(address _address) external view returns(uint256[] memory){
         return userToCollectionIds[_address];
     }
-    function test() external pure returns(uint256) {
-        return 2;
+    function getItems(uint256 collectionId) external view returns(uint256[] memory) {
+        return collections[collectionId].itemIds;
     }
 }

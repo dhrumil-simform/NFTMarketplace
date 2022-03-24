@@ -1,19 +1,29 @@
 import React from "react";
 import "./CreateNewItem.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ethers } from "ethers";
 import Collection from "../artifacts/contracts/CoreCollection.sol/CoreCollection.json";
 
 const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
+const SAMPLE_TOKEN_URI = "http://test.com";
+
 export const CreateNewItems = () => {
   const [collections, setCollections] = useState([]);
+  const [selectedCollection, setSelectedCollection] = useState(null);
+  const [currentAccount, setAccount] = useState();
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  let _name = useRef();
+  let _link = useRef();
 
   useEffect(() => {
     const fetchCollections = async () => {
+      let collectionNames = [];
       const [account] = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
+      setAccount(account);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const contract = new ethers.Contract(
         collectionAddress,
@@ -21,24 +31,46 @@ export const CreateNewItems = () => {
         provider
       );
 
-      const collectionIds = await contract.getCollectionIds(account);
-      let collectionNames = [];
-      collectionIds.map(async (data, index) => {
-        const dt = await contract.collections(data);
+      let collectionIds = await contract.getCollectionIds(account);
+      for (let i = 0; i < collectionIds.length; i++) {
+        const element = collectionIds[i];
+        const dt = await contract.collections(element);
         const obj = {
-          index: index,
-          CollectionName: dt.name,
+          index: i,
+          CollectionName: dt.name.toString(),
         };
         collectionNames.push(obj);
-      });
-
-      // console.log(collectionNames);
-      setCollections(collectionNames);
+      }
+      return collectionNames;
     };
 
-    fetchCollections();
-    console.log(collections);
-  }, []);
+    const stateData = fetchCollections();
+    stateData.then((log) => setCollections(log));
+  }, [currentAccount]);
+
+  window.ethereum.on("accountsChanged", async function (accounts) {
+    const [account] = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    setAccount(account);
+    setSelectedCollection(null);
+  });
+
+  const handleChange = (e) => {
+    setSelectedCollection(e);
+  };
+
+  useEffect(() => {
+    handleButton();
+  }, [selectedCollection]);
+
+  const handleButton = () => {
+    setIsDisabled(
+      Boolean(
+        !(selectedCollection && _name.current.value && _link.current.value)
+      )
+    );
+  };
 
   const getCollections = async () => {
     const [account] = await window.ethereum.request({
@@ -50,23 +82,33 @@ export const CreateNewItems = () => {
       Collection.abi,
       provider
     );
-    const collectionIds = await contract.getCollectionIds(account);
-    let collectionNames = [];
-    collectionIds.map(async (data, index) => {
-      const dt = await contract.collections(data);
-      const obj = {
-        index: index,
-        CollectionName: dt.name,
-      };
-      collectionNames.push(obj);
-      // console.log(collectionNames);
-    });
-    // console.log(collectionNames)
-    setCollections(collectionNames);
+    console.log(await contract.collections(1).itemIds)
   };
-  // console.log(collections);
 
-  // collections.map((collect_name) => console.log(collect_name));
+  const createNFT = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      collectionAddress,
+      Collection.abi,
+      signer
+    );
+
+    await contract
+      .createNFT(
+        _name.current.value,
+        selectedCollection,
+        _link.current.value,
+        SAMPLE_TOKEN_URI
+      )
+      .then(async (transaction) => {
+        const tx = await transaction.wait();
+        let event = await tx.events.find(
+          (event) => event.event === "NFTCreated"
+        );
+        console.log("Item ID: ", parseInt(event.args[0]._hex, 16));
+      });
+  };
 
   return (
     <div className="container">
@@ -127,6 +169,8 @@ export const CreateNewItems = () => {
           className="form-control form-control-lg"
           type="text"
           required
+          onChange={handleButton}
+          ref={_name}
           placeholder="item name"
         />
       </div>
@@ -143,6 +187,8 @@ export const CreateNewItems = () => {
         <input
           className="form-control form-control-lg"
           type="text"
+          ref={_link}
+          onChange={handleButton}
           placeholder="https://yoursite.io/item/123"
           aria-label=".form-control-lg example"
         />
@@ -189,184 +235,32 @@ export const CreateNewItems = () => {
             data-bs-content="Moving items to a different collection may take up to 30 minutes. You can manage your collections here."
           ></span>
         </p>
-        {/* <select
-          className="form-select form-select-lg mb-4"
-          id="collection"
-          placeholder="Select collection"
-        >
-          {collections.map((collect_name) => (
-            <option value={collect_name.index}>
-              {collect_name.index}
-            </option>
-          ))}
-        </select> */}
-        {collections ? (
-          <h1>kai pn</h1>
+        {collections.length === 0 ? (
+          <h1>No Collections!</h1>
         ) : (
-          collections.map((collect_name) => (
-            <span key={collect_name.index}>{collect_name.index}</span>
-          ))
+          <select
+            className="form-select form-select-lg mb-4"
+            id="collection"
+            placeholder="Select collection"
+            onChange={(e) => {
+              handleChange(e.target.value || null);
+            }}
+          >
+            <option value={""} defaultChecked>
+              Select
+            </option>
+            {collections.map((collect_name) => (
+              <option key={collect_name.index} value={collect_name.index}>
+                {collect_name.CollectionName}
+              </option>
+            ))}
+          </select>
         )}
       </div>
 
-      {/* <div className="my-3">
-        <div className="d-flex border-bottom my-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="currentColor"
-            className="bi bi-layout-text-sidebar-reverse"
-            viewBox="0 0 16 16"
-          >
-            <path d="M12.5 3a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5zm0 3a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5zm.5 3.5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5zm-.5 2.5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1 0-1h5z" />
-            <path d="M16 2a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2zM4 1v14H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h2zm1 0h9a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5V1z" />
-          </svg>
-
-          <div className="col mx-3">
-            <h6 className="title">Properties</h6>
-            <p className="text sub-text">
-              Textual traits that show up as rectangles
-            </p>
-          </div>
-
-          <button className="btn btn-add">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-plus-lg"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="d-flex border-bottom my-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="currentColor"
-            className="bi bi-star-fill"
-            viewBox="0 0 16 16"
-          >
-            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-          </svg>
-
-          <div className="col mx-3">
-            <h6 className="title">Levels</h6>
-            <p className="text sub-text">
-              Numerical traits that show as a progress bar
-            </p>
-          </div>
-
-          <button className="btn btn-add">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-plus-lg"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="d-flex border-bottom my-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="currentColor"
-            className="bi bi-bar-chart-fill"
-            viewBox="0 0 16 16"
-          >
-            <path d="M1 11a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-3zm5-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V2z" />
-          </svg>
-
-          <div className="col mx-3">
-            <h6 className="title">Stats</h6>
-            <p className="text sub-text">
-              Numerical traits that show as a progress bar
-            </p>
-          </div>
-
-          <button className="btn btn-add">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-plus-lg"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"
-              />
-            </svg>
-          </button>
-        </div>
-
-        <div className="d-flex border-bottom my-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="currentColor"
-            className="bi bi-unlock-fill"
-            viewBox="0 0 16 16"
-          >
-            <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z" />
-          </svg>
-          <div className="col mx-3">
-            <h6 className="title">Unlockable Content</h6>
-            <p className="text sub-text">
-              Include unlockable content that can only be revealed by the owner
-              of the item.
-            </p>
-          </div>
-          <div className="form-check form-switch">
-            <input className="form-check-input" type="checkbox" id="" />
-          </div>
-        </div>
-
-        <div className="d-flex border-bottom my-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            fill="currentColor"
-            className="bi bi-exclamation-triangle-fill"
-            viewBox="0 0 16 16"
-          >
-            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-          </svg>
-          <div className="col mx-3">
-            <h6 className="title">Explicit & Sensitive Content</h6>
-            <p className="text sub-text">
-              Set this item as explicit and sensitive contentinfo
-            </p>
-          </div>
-          <div className="form-check form-switch">
-            <input className="form-check-input" type="checkbox" id="" />
-          </div>
-        </div>
-      </div> */}
-
       <button
         className="btn btn-lg btn-outline-primary rounded-3 my-5 mx-5"
+        disabled={isDisabled}
         onClick={getCollections}
       >
         Create
