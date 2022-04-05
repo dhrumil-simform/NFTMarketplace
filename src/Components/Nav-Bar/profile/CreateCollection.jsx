@@ -1,9 +1,8 @@
 import React from "react";
 import { FaAsterisk } from "react-icons/fa";
 import "./CreateCollection.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
-import {useHistory} from "react-router-dom"
 import { ethers } from "ethers";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import Collection from "../../../artifacts/contracts/CoreCollection.sol/CoreCollection.json";
@@ -13,11 +12,11 @@ const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
 
 export const CreateCollection = () => {
+  const navigate = useNavigate();
   const [isDisabled, setIsDisabled] = useState(true);
   const [fileUrl, setFileUrl] = useState(null);
   const [description, setDescription] = useState("");
   const _name = useRef();
-  const history=useHistory();
 
   async function onFileUpload(e) {
     const file = e.target.files[0];
@@ -75,7 +74,7 @@ export const CreateCollection = () => {
           (event) => event.event === "CollectionCreated"
         );
         console.log("Collection ID: ", parseInt(event.args[1]._hex, 16));
-        history.push("/my Collections")
+        navigate("/my Collections");
       })
       .catch((err) => {
         console.log(err);

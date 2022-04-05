@@ -1,11 +1,12 @@
 import React from "react";
 import "./ExploreCard.css";
-import { useHistory, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ExploreCard = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
+
   const handleClick = () => {
-    history.push("/Explore/Nft");
+    navigate("/Explore/Nft");
   };
 
   return (
