@@ -9,9 +9,9 @@ import { create as ipfsHttpClient } from "ipfs-http-client";
 import { AppContext } from "../App";
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString();
 
-const SAMPLE_TOKEN_URI = "http://test.com";
 
 export const CreateNewItems = () => {
   const history = useHistory();

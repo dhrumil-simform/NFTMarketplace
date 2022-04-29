@@ -26,7 +26,7 @@ const NFTDescription = ({ nftData, TOKENID, collectionAddress }) => {
               Created by :-
               <span className="text-primary fs-5 ms-1">{nftData.creator}</span>
             </p>
-            <p className="description">Descrioption :-{nftData.description}</p>
+            <p className="description">Description :-{nftData.description}</p>
           </div>
         </div>
       </div>

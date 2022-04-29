@@ -25,7 +25,8 @@ describe("CoreCollection & Market", async () => {
 
   it("should create collection successfully", async () => {
     const name = "collection_1";
-    const tx = await nft.createCollection(name);
+    const collectionLink = "http://test.com"
+    const tx = await nft.createCollection(name, collectionLink);
     const reciept = await tx.wait();
     const events = reciept.events.find(
       (event) => event.event === "CollectionCreated"
@@ -37,7 +38,8 @@ describe("CoreCollection & Market", async () => {
 
   it("should create NFT and add it to the collection", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     const tx = await nft.createNFT(
       "My NFT",
       0,
@@ -53,10 +55,12 @@ describe("CoreCollection & Market", async () => {
 
   it("should update the owner of the token after sending", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
     expect(await nft.ownerOf(1)).to.equal(addr1.address);
-    await market.sendNFT(1, addr2.address, nft.address);
+    // await nft.sendNFT(1, addr2.address, nft.address);
+    await nft.transferFrom(addr1.address, addr2.address, 1)
     expect(await nft.ownerOf(1)).to.equal(addr2.address);
   });
 
@@ -66,7 +70,8 @@ describe("CoreCollection & Market", async () => {
 
   it("lists the NFT for Sale in Marketplace", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await expect(
@@ -94,7 +99,8 @@ describe("CoreCollection & Market", async () => {
 
   it("Cancels NFT from listing", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await expect(
@@ -114,7 +120,8 @@ describe("CoreCollection & Market", async () => {
 
   it("should buy NFT and update the Owner", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await expect(
@@ -155,7 +162,8 @@ describe("CoreCollection & Market", async () => {
 
   it("creates offer for NFT", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await market.createMarketItem(
@@ -198,7 +206,8 @@ describe("CoreCollection & Market", async () => {
 
   it("cancels offer", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await market.createMarketItem(
@@ -229,7 +238,8 @@ describe("CoreCollection & Market", async () => {
 
   it("Accepts offer for NFT", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await market.createMarketItem(
@@ -261,7 +271,8 @@ describe("CoreCollection & Market", async () => {
 
   it("Lowers the price of the NFT", async () => {
     const collectionName = "collection_1";
-    await nft.createCollection(collectionName);
+    const collectionLink = "http://test3.com"
+    await nft.createCollection(collectionName, collectionLink);
     await nft.createNFT("My NFT", 0, "http://test2.com", "http://test.com");
 
     await expect(
@@ -293,12 +304,4 @@ describe("CoreCollection & Market", async () => {
 
     expect(await market.idToPrice(1)).to.equal(ethers.utils.parseEther("0.5"));
   });
-
-  // it("test", async () => {
-  //   await nft.createCollection("sd");
-  //   await nft.createCollection("sds");
-  //   await nft.createCollection("sdss");
-  //   const x = await nft.getCollectionIds(addr1.address)
-  //   console.log(x);
-  // })
 });

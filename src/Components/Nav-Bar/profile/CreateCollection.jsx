@@ -9,7 +9,8 @@ import Collection from "../../../artifacts/contracts/CoreCollection.sol/CoreColl
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString();
 
 export const CreateCollection = () => {
   const [isDisabled, setIsDisabled] = useState(true);
@@ -39,10 +40,10 @@ export const CreateCollection = () => {
 
   async function uploadToIPFS() {
     console.log("uploading to IPFS...");
-    if (!description || !fileUrl) return;
+    if (!fileUrl) return;
     /* first, upload to IPFS */
     const data = JSON.stringify({
-      description,
+      description: description,
       image: fileUrl,
     });
     try {
@@ -77,7 +78,7 @@ export const CreateCollection = () => {
           (event) => event.event === "CollectionCreated"
         );
         console.log("Collection ID: ", parseInt(event.args[1]._hex, 16));
-        history.push("/my-collections");
+        history.push("/profile");
       })
       .catch((err) => {
         console.log(err);

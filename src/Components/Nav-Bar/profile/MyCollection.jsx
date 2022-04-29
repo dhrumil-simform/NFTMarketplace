@@ -7,7 +7,8 @@ import Collection from "../../../artifacts/contracts/CoreCollection.sol/CoreColl
 import MyCollectionCard from "../../Card/MyCollectionCard";
 import MyNftCard from "../../Card/MyNftCard";
 import { AppContext } from "../../../App";
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString();
 
 export const MyCollection = () => {
   const { currentAccount } = useContext(AppContext);
@@ -143,17 +144,30 @@ export const MyCollection = () => {
         {isNftPageVisible ? "My NFTs" : "My Collections"}
       </h3>
       {isNftPageVisible ? (
-        <div className="row row-cols-md-3 gy-3 p-0 m-5">
-          {nftList.map((data, index) => {
-            console.log("data", data);
-            return <MyNftCard key={index} nftdata={data} />;
-          })}
+        <div>
+          {nftList.length !==0 ? (
+            <div className="row row-cols-md-3 gy-3 p-0 m-5">
+            {nftList.map((data, index) => {
+              return <MyNftCard key={index} nftdata={data} />;
+            })}
+          </div>
+          ) : (
+            <div>
+              <h1 className="text-center">No NFTs Owned</h1>
+            </div>
+          )}
         </div>
       ) : (
-        <div className="row row-cols-md-3 gy-5  mt-5">
-          {collectionList.map((list, index) => {
-            return <MyCollectionCard key={index} collection={list} />;
-          })}
+        <div>
+          {collectionList.length !== 0 ? (
+            <div className="row row-cols-md-3 gy-5  mt-5">
+              {collectionList.map((list, index) => {
+                return <MyCollectionCard key={index} collection={list} />;
+              })}
+            </div>
+          ) : (
+            <div><h1 className="text-center">No Collections Created</h1></div>
+          )}
         </div>
       )}
     </div>

@@ -10,8 +10,10 @@ import Collection from "../../artifacts/contracts/CoreCollection.sol/CoreCollect
 import Market from "../../artifacts/contracts/Market.sol/Market.json";
 import { FaOldRepublic } from "react-icons/fa";
 import { AppContext } from "../../App";
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-const marketAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString();
+// const marketAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const marketAddress = (process.env.REACT_APP_MARKET_ADDRESS).toString();
 
 const NFTOffer = (props, ref) => {
   const [offerList, setOfferList] = useState([]);

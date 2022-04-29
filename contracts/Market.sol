@@ -174,6 +174,19 @@ contract Market is IMarket {
         sendNFT(_tokenId, msg.sender, _coreCollection);
         idToOnSale[_tokenId] = false;
         idToPrice[_tokenId] = 0;
+        for (uint256 i = 0; i < idToOffers[_tokenId].length; i++) {
+            uint256 offerId = idToOffers[_tokenId][i];
+
+            
+                if (offerStatus[offerId]) {
+                    address user = offerIdToUser[offerId];
+
+                    payable(user).transfer(offerIdToPrice[offerId]);
+                }
+            
+
+            offerStatus[offerId] = false;
+        }
 
         emit MarketSaleCreated(_tokenId, msg.sender);
     }

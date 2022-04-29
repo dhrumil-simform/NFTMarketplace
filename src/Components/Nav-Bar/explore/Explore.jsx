@@ -6,7 +6,8 @@ import { ethers } from "ethers";
 import Collection from "../../../artifacts/contracts/CoreCollection.sol/CoreCollection.json";
 import { carddata } from "./DataExplore";
 
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString();
 
 export const Explore = () => {
   let provider;

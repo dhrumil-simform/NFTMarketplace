@@ -19,8 +19,10 @@ import NFTListing from "./NFTListing";
 import NFTDescription from "./NFTDescription";
 import NFTOfferModal from "../modal/NFTOfferModal";
 import { AppContext } from "../../App";
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
-const marketAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString()
+// const marketAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const marketAddress = (process.env.REACT_APP_MARKET_ADDRESS).toString()
 
 const ViewNft = () => {
   let location = useLocation();
@@ -145,7 +147,7 @@ const ViewNft = () => {
     const tx = await marketContract.createMarketItem(
       TOKENID,
       ethers.utils.parseEther(sellprice),
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      collectionAddress,
       { value: ethers.utils.parseEther("0.25") }
     );
     await tx.wait();
@@ -160,7 +162,7 @@ const ViewNft = () => {
   const cancelListing = async () => {
     const tx = await marketContract.cancelListing(
       TOKENID,
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      collectionAddress
     );
     await tx.wait();
     setNftData({ ...nftData, onSale: false });
@@ -174,7 +176,7 @@ const ViewNft = () => {
     const transaction = await marketContract.lowerPrice(
       TOKENID,
       ethers.utils.parseEther(_newPrice),
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      collectionAddress
     );
     await transaction.wait();
     console.log("Price after: ", await marketContract.idToPrice(TOKENID));

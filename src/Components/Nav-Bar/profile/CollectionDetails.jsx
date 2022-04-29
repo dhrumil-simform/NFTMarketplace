@@ -6,7 +6,8 @@ import { ethers, Signer } from "ethers";
 import MyNftCard from "../../Card/MyNftCard";
 import Collection from "../../../artifacts/contracts/CoreCollection.sol/CoreCollection.json";
 
-const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+// const collectionAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const collectionAddress = (process.env.REACT_APP_CORECOLLECTION_ADDRESS).toString();
 
 const CollectionDetails = () => {
   let location = useLocation();
@@ -75,11 +76,20 @@ const CollectionDetails = () => {
       <hr />
       <h3 className="text-center">NFT's</h3>
 
-      <div className="row row-cols-md-3 gy-3 p-0 m-5">
-        {nftList.map((data, index) => {
-          return <MyNftCard key={index} nftdata={data} />;
-        })}
+      <div>
+        {nftList.length !==0 ? (
+          <div className="row row-cols-md-3 gy-3 p-0 m-5">
+          {nftList.map((data, index) => {
+            return <MyNftCard key={index} nftdata={data} />;
+          })}
+        </div>
+        ) : (
+          <div>
+            <h1 className="text-center">No NFTs Created in this Collection</h1>
+          </div>
+        )}
       </div>
+      
     </div>
   );
 };

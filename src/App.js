@@ -18,6 +18,7 @@ import { useEffect, useState, createContext } from "react";
 // import from './Components/NFT/ViewNft.jsx'
 export const AppContext = createContext(null);
 function App() {
+  // console.log(process.env.REACT_APP_CORECOLLECTION_ADDRESS)
   const [state, setState] = useState({ isConnected: false });
   const [currentAccount, setCurrentAccount] = useState();
 
